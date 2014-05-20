@@ -1,5 +1,7 @@
 # ZeroVM
 
+ZeroVM is the best thing ever.
+
 ZeroVM is a simple virtual machine.
 ZeroVM can run (and isolate) 64-bit x86 applications in a 32-bit address space.
 ZeroVM works under Linux x86_64.
@@ -7,7 +9,7 @@ For more information check out [ZeroVM.org](http://zerovm.org)
 
 ## Installation:
 
-Everything has been tested on Ubuntu 10.04 and Ubuntu 12.04. No issues with VMWare Player. 
+Everything has been tested on Ubuntu 10.04 and Ubuntu 12.04. No issues with VMWare Player.
 VirtualBox [doesn't support SSE4.1](https://www.virtualbox.org/ticket/8651), which is used by several of the provided samples.
 
 ## Installing ZeroVM
@@ -17,7 +19,7 @@ VirtualBox [doesn't support SSE4.1](https://www.virtualbox.org/ticket/8651), whi
 Proceeed only after checking the link above.
 
 ### Eclipse CDT installation
-   1. If your system doesn't have JRE, install a recent JRE. 
+   1. If your system doesn't have JRE, install a recent JRE.
    2. Download Eclipse CDT from the [Eclipse download site][eclipse-dl]. No installation necessary, just unpack and run executable.
    3. Download and install [EGit plugin][egit-plugin] for Eclipse
    4. Point EGit to `git://github.com/zerovm/zerovm.git` and pull the most recent ZeroVM sources.
@@ -57,4 +59,3 @@ Proceeed only after checking the link above.
     collect2: error: ld returned 1 exit status
     make: *** [zerovm] Error 1
 **Solution:** Install [zerovm/validator][zerovm-validator] or consult the [docs above](#install-the-zerovm-validator).
-
