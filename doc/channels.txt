@@ -1,13 +1,13 @@
 ZeroVM channels description
-(up to date 2014-05-12, needs editing)
+(up to date 2014-05-12)
 ---------------------------
 
-Channels are the key component of ZeroVM I/O subsystem. On the host system
-side the channels are backed by the file system using regular files, pipes,
-character devices or unix domain sockets. On the guest side the channel is
-a device file. It could be used as either character or block device it depends
-on the usage pattern and access type (see access types below). "Channel"
-keyword passed via the manifest to ZeroVM (comma delimited, see examples
+Channels are the key component of the ZeroVM I/O subsystem. On the host system
+side, channels are backed by the file system using regular files, pipes,
+character devices or unix domain sockets. On the guest side, the channel is
+a device file. It could be used as either character or block device depending
+on the usage pattern and access type (see access types below). The "Channel"
+keyword is passed via the manifest to ZeroVM (comma delimited, see examples
 below). this keyword can (and should) be used more than once per manifest.
 It is possible to use integers in octal, decimal and hexadecimal notation.
 
@@ -26,7 +26,7 @@ puts     - limit for writes allowed for this channel
 put_size - limit on total amount of data to be written to this channel in bytes
 
 Fields available for the untrusted code (see api.txt):
-limits -- 4 limits for the channel
+limits -- 4 limits for the channel (reads/writes in bytes and "syscall" counts)
 size -- channel size. only available for random access channels
 type -- access type
 name -- the channel name (the alias from the manifest)
@@ -44,26 +44,26 @@ access type and 4 read/write limits):
 - full random access channel. can be read or written from any valid position
   (access type 3, any limits)
 
-There are 3 mandatory channels (standard c90 streams): stdin, stdout, stdout.
+There are 3 mandatory channels (standard c90 streams): stdin, stdout, stderr.
 The channels have well known device names "/dev/stdin", "/dev/stdout" and
 "/dev/stderr". all mandatory channels must present in the manifest.
-usually /dev/stdin is a sequential read only channel, /dev/stdin is a
-sequential write only channel and /dev/stderr is a sequential write only 
-channel. however standard channels access type can be redefined in the
+usually /dev/stdin is a sequential read only channel, /dev/stdout is a
+sequential write only channel and /dev/stderr is a sequential write only
+channel. however standard channels' access types can be redefined in the
 system manifest (not recommended).
 
-Channel is a file abstraction over the local files and network streams. Local 
-files can have random access type, network streams are always sequential.
+A channel is a file abstraction over local files and network streams. Local
+files can have the random access type, while network streams are always sequential.
 
-All channels are opened before the session start and closed after session end.
-In case of the channels i/o error ZeroVM will not start. ZeroVM preallocates
-specified byte size for the local writable channels (this can be changed with
--P switch, see zerovm_switches.txt).
+All channels are opened before the session start and closed after the session end.
+In the case of a channel i/o error, ZeroVM will not start. ZeroVM preallocates
+the specified byte size for the local writable channels (this can be changed with
+the -P switch, see zerovm_switches.txt).
 
 Network (pipe) channels
 -------------------------------
 ZeroVM can operate channels using domain name sockets (unix sockets) when
-network broker is available. in that case system manifest should contain
+a network broker is available. in that case system manifest should contain
 "Broker" key with proper value (name of unix soket where broker will listen
 to request). system manifest also must contain "Node" key with not empty
 value. node name is part of agreement between network broker and ZeroVM (for
@@ -97,10 +97,10 @@ broker.txt
 examples
 -----------
 Channel = /tmp/file.tmp, /dev/stderr, 0, 0, 0x100, 1048576
-  will be mounted over "/tmp/file.tmp" file
-  to "/dev/stderr" alias (visible to user)
-  channel has sequential access
-  channel is write only ("0, 0" in positions 5, 6 means no read possible)
+  will map the "/tmp/file.tmp" file from the host system
+  to the "/dev/stderr" alias (the name visible to user code in untrusted execution)
+  the channel has sequential access
+  the channel is write only ("0, 0" in positions 5, 6 means no read possible)
   it is possible to make 256 writes (specified in position 7)
   it is possible to write 1048576 bytes (specified in position 8)
 
@@ -111,4 +111,4 @@ Channel = 12345, /dev/out/node13, 0, 0, 0, 13, 1313
 Limitations
 -----------
 - The number of channels in the manifest is limited to 10915 "Channel" lines
-- user program cannot use network channel to itself
+- the user program cannot use a network channel to itself
