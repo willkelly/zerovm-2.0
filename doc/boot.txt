@@ -3,17 +3,20 @@ This document describes untrusted elf loader for ZeroVM platform
 -------------------------------------------------------------
 
 Description:
-the untrusted elf loader is responsible for loading the user code (nexe). the loader binary
-can be specified using the "Boot" key in the manifest. if the untrusted loader is not
-specified, the default loader (uboot) will be used.
+the untrusted elf loader is responsible for loading the user code
+(nexe).  the loader binary can be specified using the "Boot" key in
+the manifest.  if the untrusted loader is not specified, the default
+loader (uboot) will be used.
 
 uboot:
-this loader will be used by default if another loader is not provided. uboot
-expects the user elf to be connected through the channel "/boot/elf". the channel should
-be accessible for random reading with appropriate limits. uboot can only load
-statically linked 64-bit nexes. if a fatal error is encountered during the loading
-process, uboot will terminate the session with an error code corresponding to the uboot
-source code line where the loader failed. here is the list of possible problems:
+this loader will be used by default if another loader is not
+provided. uboot expects the user elf to be connected through the
+channel "/boot/elf". the channel should be accessible for random
+reading with appropriate limits. uboot can only load statically linked
+64-bit nexes. if a fatal error is encountered during the loading
+process, uboot will terminate the session with an error code
+corresponding to the uboot source code line where the loader
+failed. here is the list of possible problems:
 
 return codes of uboot
 61 -- cannot find "/boot/elf" channel
@@ -59,19 +62,23 @@ how to make an untrusted elf loader:
 - loader is a pure binary: ".text" segment is extracted from elf.
   to extract the ".text" segment from an elf, the following command can be used
   objcopy -O binary --only-section=.text uboot.nexe uboot.bin
-- the untrusted elf loader will be loaded by ZeroVM into the last user heap pages
+- the untrusted elf loader will be loaded by ZeroVM into the last user heap
+  pages
 - loader can return its own space to the user heap (see uboot.c for example)
-- untrusted loader should modify the user manifest in accordance with the changes it made.  at a minimum, heap_size and heap_ptr should be set properly
+- untrusted loader should modify the user manifest in accordance with the
+  changes it made.  at a minimum, heap_size and heap_ptr should be set properly
 - loader must be careful about user stack and registers
 
-NOTE: in addition to loading the elf format, it is possible to write a custom loader to load arbitrary code formats.
-      it is perhaps more correct to call the untrusted elf loader simply
-      "untrusted loader"
+NOTE: in addition to loading the elf format, it is possible to write a
+custom loader to load arbitrary code formats. it is perhaps more
+correct to call the untrusted elf loader simply the "untrusted loader"
 
 update:
-uboot ZeroVM 2* (compatible) differs from uboot in the initial ZeroVM 2. since old nexes expect
-properly set stack and registers, uboot cannot use z_mprotect() to pass control
-to the untrusted code, as z_mprotect() leaves junk in the user stack.
-instead, uboot now jumps to the user entry point and does not deallocate
-own space. space can be deallocated later by user code. otherwise, the user heap
-will be 64kb smaller
+
+uboot ZeroVM 2* (compatible) differs from uboot in the initial ZeroVM
+2.  since old nexes expect properly set stack and registers, uboot
+cannot use z_mprotect() to pass control to the untrusted code, as
+z_mprotect() leaves junk in the user stack.  instead, uboot now jumps
+to the user entry point and does not deallocate own space. space can
+be deallocated later by user code. otherwise, the user heap will be
+64kb smaller
