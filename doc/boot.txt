@@ -1,19 +1,19 @@
 This document describes untrusted elf loader for ZeroVM platform
-(up to date 2014-06-06, needs editing)
+(up to date 2014-06-06)
 -------------------------------------------------------------
 
 Description:
-untrusted elf loader responsible to load user code (nexe). the loader binary
-can be specified using "Boot" key in manifest. if untrusted loader is not
-specified the default loader (uboot) will be used
+the untrusted elf loader is responsible for loading the user code (nexe). the loader binary
+can be specified using the "Boot" key in the manifest. if the untrusted loader is not
+specified, the default loader (uboot) will be used.
 
 uboot:
 this loader will be used by default if another loader is not provided. uboot
-expects user elf connected through channel "/boot/elf". the channel should
+expects the user elf to be connected through the channel "/boot/elf". the channel should
 be accessible for random reading with appropriate limits. uboot can only load
-statically linked 64-bit nexes. if fatal error encountered during the loading
-process uboot will terminate session with error code corresponding to uboot
-source code line where loader failed. here is the list of possible problems:
+statically linked 64-bit nexes. if a fatal error is encountered during the loading
+process, uboot will terminate the session with an error code corresponding to the uboot
+source code line where the loader failed. here is the list of possible problems:
 
 return codes of uboot
 61 -- cannot find "/boot/elf" channel
@@ -39,7 +39,7 @@ return codes of uboot
 220 -- bad program entry point address
 221 -- bad program entry point address
 226 -- data segment is not last segment
-243 -- (should no appear)
+243 -- (should not appear)
 247 -- read-only data segment overlaps data segment
 251 -- text segment overlaps rodata segment
 254 -- no rodata segment, and text segment overlaps data segment
@@ -53,26 +53,25 @@ return codes of uboot
 314 -- cannot make user manifest writable
 329 -- cannot make user manifest read only
 
-how to make untrusted elf loader:
+how to make an untrusted elf loader:
 - entry point should be 0x20000 and point to the ".text" beginning
 - no data are allowed
-- loader is a pure binary: ".text" segment extracted from elf.
-  to extract ".text" segment from elf following command can be used
+- loader is a pure binary: ".text" segment is extracted from elf.
+  to extract the ".text" segment from an elf, the following command can be used
   objcopy -O binary --only-section=.text uboot.nexe uboot.bin
-- untrusted elf loader will be loaded by ZeroVM into last user heap pages
-- loader can return own space to user heap (see uboot.c for example)
-- untrusted loader should modify user manifest according changes it made.
-  at least heap_size and heap_ptr should be set properly
-- loader should take care about user stack and registers
+- the untrusted elf loader will be loaded by ZeroVM into the last user heap pages
+- loader can return its own space to the user heap (see uboot.c for example)
+- untrusted loader should modify the user manifest in accordance with the changes it made.  at a minimum, heap_size and heap_ptr should be set properly
+- loader must be careful about user stack and registers
 
-NOTE: it is possible to write custom loader to load arbitrary code. not only
-      elf. so it is perhaps more correct to call untrusted elf loader simply
+NOTE: in addition to loading the elf format, it is possible to write a custom loader to load arbitrary code formats.
+      it is perhaps more correct to call the untrusted elf loader simply
       "untrusted loader"
-      
+
 update:
-uboot ZeroVM 2* (compatible) differ from uboot ZeroVM 2. since old nexes await
+uboot ZeroVM 2* (compatible) differs from uboot in the initial ZeroVM 2. since old nexes expect
 properly set stack and registers, uboot cannot use z_mprotect() to pass control
-to the untrusted code. because z_mprotect() leaves junk in the user stack.
-instead of that uboot jumps to the user entry point and does not deallocate
-own space. space can be deallocated later by user code. otherwise user heap
-will be 64kb less
+to the untrusted code, as z_mprotect() leaves junk in the user stack.
+instead, uboot now jumps to the user entry point and does not deallocate
+own space. space can be deallocated later by user code. otherwise, the user heap
+will be 64kb smaller
