@@ -61,39 +61,41 @@ end.  In the case of a channel i/o error, ZeroVM will not start. ZeroVM
 preallocates the specified byte size for the local writable channels (this can
 be changed with the -P switch, see zerovm_switches.txt).
 
-Network (pipe) channels
--------------------------------
-ZeroVM can operate channels using domain name sockets (unix sockets) when
-a network broker is available. in that case system manifest should contain
-"Broker" key with proper value (name of unix soket where broker will listen
-to request). system manifest also must contain "Node" key with not empty
-value. node name is part of agreement between network broker and ZeroVM (for
-further details see "broker.txt").
+# The following block, delimited by # is out of date and should be updated with
+# information about zbroker integration or removed.
+# Network (pipe) channels
+# -------------------------------
+# ZeroVM can operate channels using domain name sockets (unix sockets) when
+# a network broker is available. in that case system manifest should contain
+# "Broker" key with proper value (name of unix soket where broker will listen
+# to request). system manifest also must contain "Node" key with not empty
+# value. node name is part of agreement between network broker and ZeroVM (for
+# further details see "broker.txt").
 
-network channels names is part of broker protocol (see "broker.txt"). network
-channels are unidirectional. which means they are read only or write only.
-network channels can only have sequential access.
+# network channels names is part of broker protocol (see "broker.txt"). network
+# channels are unidirectional. which means they are read only or write only.
+# network channels can only have sequential access.
 
-Each read from read only network channel can result in zvm_eof indicator read.
-This means that the other party closed the channel, you will get the same
-zvm_eof each time you try to read from this channel again.
+# Each read from read only network channel can result in zvm_eof indicator read.
+# This means that the other party closed the channel, you will get the same
+# zvm_eof each time you try to read from this channel again.
 
-Node identifiers
-----------------
-Node id and channel id (which is id of connected node) are not zerovm's
-responsibility. Manifest provider and broker should have agreement about
-node/channel naming convention. ZeroVM treat node id as a string.
+# Node identifiers
+# ----------------
+# Node id and channel id (which is id of connected node) are not zerovm's
+# responsibility. Manifest provider and broker should have agreement about
+# node/channel naming convention. ZeroVM treat node id as a string.
 
-If the manifest contains "Broker", "Node" and node identifier(s) in channel(s)
-definition ZeroVM will do the following on startup:
-1. open connection to broker using path specified by "Broker" value
-2. mount channel(s) with node id in name field using "Node" from manifest and
-   channel(s) definition to ask read or write only mode for the channel(s)
+# If the manifest contains "Broker", "Node" and node identifier(s) in channel(s)
+# definition ZeroVM will do the following on startup:
+# 1. open connection to broker using path specified by "Broker" value
+# 2. mount channel(s) with node id in name field using "Node" from manifest and
+#    channel(s) definition to ask read or write only mode for the channel(s)
 
-After these operations the channels will be set up with correct unidirectional
-data paths. You can use ZeroVM networked samples to see the flow, namely
-'netcopy' or 'demo/channels' sample. To find more info about broker consult
-broker.txt
+# After these operations the channels will be set up with correct unidirectional
+# data paths. You can use ZeroVM networked samples to see the flow, namely
+# 'netcopy' or 'demo/channels' sample. To find more info about broker consult
+# broker.txt
 
 examples
 -----------
@@ -106,10 +108,14 @@ Channel = /tmp/file.tmp, /dev/stderr, 0, 0, 0x100, 1048576
   it is possible to write 1048576 bytes (specified in position 8)
 
 Channel = /dev/stdin, /dev/stdin, 0, 07, 0x1000, 0, 0
-Channel = 55431, /dev/in/some_host, 0, 0x1000000, 0x100000000, 0, 0
-Channel = 12345, /dev/out/node13, 0, 0, 0, 13, 1313
+# The following block, delimited by # is out of date and should be updated with
+# information about zbroker integration or removed.
+# Channel = 55431, /dev/in/some_host, 0, 0x1000000, 0x100000000, 0, 0
+# Channel = 12345, /dev/out/node13, 0, 0, 0, 13, 1313
 
 Limitations
 -----------
 - The number of channels in the manifest is limited to 10915 "Channel" lines
-- the user program cannot use a network channel to itself
+# The following block, delimited by # is out of date and should be updated with
+# information about zbroker integration or removed.
+# - the user program cannot use a network channel to itself
