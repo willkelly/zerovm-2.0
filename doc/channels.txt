@@ -53,12 +53,13 @@ channel. however standard channels' access types can be redefined in the
 system manifest (not recommended).
 
 A channel is a file abstraction over local files and network streams. Local
-files can have the random access type, while network streams are always sequential.
+files can have the random access type, while network streams are always
+sequential.
 
-All channels are opened before the session start and closed after the session end.
-In the case of a channel i/o error, ZeroVM will not start. ZeroVM preallocates
-the specified byte size for the local writable channels (this can be changed with
-the -P switch, see zerovm_switches.txt).
+All channels are opened before the session start and closed after the session
+end.  In the case of a channel i/o error, ZeroVM will not start. ZeroVM
+preallocates the specified byte size for the local writable channels (this can
+be changed with the -P switch, see zerovm_switches.txt).
 
 Network (pipe) channels
 -------------------------------
@@ -97,8 +98,8 @@ broker.txt
 examples
 -----------
 Channel = /tmp/file.tmp, /dev/stderr, 0, 0, 0x100, 1048576
-  will map the "/tmp/file.tmp" file from the host system
-  to the "/dev/stderr" alias (the name visible to user code in untrusted execution)
+  will map the "/tmp/file.tmp" file from the host system to the "/dev/stderr"
+  alias (the name visible to user code in untrusted execution)
   the channel has sequential access
   the channel is write only ("0, 0" in positions 5, 6 means no read possible)
   it is possible to make 256 writes (specified in position 7)
